@@ -6,11 +6,12 @@ on: [push]
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
+
 
     services:
       postgres:
-        image: postgres:14.9
+        image: postgres:15
         env:
           POSTGRES_USER: decide
           POSTGRES_PASSWORD: decide
@@ -42,3 +43,11 @@ jobs:
       run: |
         cd decide
         ./manage.py test  --keepdb
+    - name: Change permissions on decide (Make static directory tree readable)
+      become: yes
+      file:
+      path: /home/decide
+      owner: "decide"
+      recurse: yes
+      group: decide
+      mode: "555"
